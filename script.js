@@ -177,8 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   bindCursorHovers();
-
-
   // ==========================================
   // 2. BACKGROUND CANVAS ANIMATION
   // ==========================================
@@ -192,6 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
     setupConstellationCenters();
+    initMatrixColumns();
+    initFloatingViz();
     drawOrgConnectors(); // Redraw leadership tree paths on resize
   });
 
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Data Science Drifting Mathematical Symbols (drifts slowly upwards)
-  const symbolChars = ['Σ', 'μ', 'σ', 'f(x)', 'R²', 'β', 'λ', 'θ', 'P(A|B)', 'dy/dx', '√x', 'log(n)', 'matrix[N]', 'ŷ', 'H₀', 'x̄', 'χ²', 'z-score'];
+  const symbolChars = ['Σ', 'μ', 'σ', 'f(x)', 'R²', 'β', 'λ', 'θ', 'P(A|B)', 'dy/dx', '√x', 'log(n)', 'matrix[N]', 'ŷ', 'H₀', 'x̄', 'χ²', 'z-score'];
   const mathSymbols = [];
   const symbolCount = 20;
   
@@ -294,6 +294,100 @@ document.addEventListener('DOMContentLoaded', () => {
   // Start sonar pings
   setTimeout(spawnSonar, 2000);
 
+  // ---- MATRIX RAIN DATA COLUMNS ----
+  const matrixColumns = [];
+  const matrixChars = '0123456789ABCDEFΣμσβλθπΔ∂∫≈≠≤≥±∞'.split('');
+  
+  function initMatrixColumns() {
+    matrixColumns.length = 0;
+    const colSpacing = 50;
+    const numCols = Math.ceil(width / colSpacing);
+    for (let i = 0; i < numCols; i++) {
+      // Only populate ~30% of columns to keep it subtle
+      if (Math.random() > 0.3) continue;
+      matrixColumns.push({
+        x: i * colSpacing + Math.random() * 20,
+        y: Math.random() * -height, // start above viewport
+        speed: 0.3 + Math.random() * 0.8,
+        length: 8 + Math.floor(Math.random() * 18),
+        chars: [],
+        charTimer: 0,
+        charInterval: 3 + Math.floor(Math.random() * 5),
+        fontSize: 10 + Math.floor(Math.random() * 4)
+      });
+      // Pre-fill chars
+      const col = matrixColumns[matrixColumns.length - 1];
+      for (let j = 0; j < col.length; j++) {
+        col.chars.push(matrixChars[Math.floor(Math.random() * matrixChars.length)]);
+      }
+    }
+  }
+  initMatrixColumns();
+
+  // ---- FLOATING MINI DATA VISUALIZATIONS ----
+  const floatingViz = [];
+  const vizTypes = ['barChart', 'scatterMini', 'sineWave', 'pieChart', 'histogram'];
+  
+  function initFloatingViz() {
+    floatingViz.length = 0;
+    const vizCount = Math.max(4, Math.floor(width / 350));
+    for (let i = 0; i < vizCount; i++) {
+      floatingViz.push(createViz());
+    }
+  }
+
+  function createViz() {
+    const type = vizTypes[Math.floor(Math.random() * vizTypes.length)];
+    const vizW = 60 + Math.random() * 50;
+    const vizH = 40 + Math.random() * 35;
+    return {
+      type: type,
+      x: Math.random() * (width - vizW),
+      y: Math.random() * (height - vizH),
+      w: vizW,
+      h: vizH,
+      vx: (Math.random() - 0.5) * 0.15,
+      vy: (Math.random() - 0.5) * 0.12,
+      opacity: 0.04 + Math.random() * 0.04,
+      phase: Math.random() * Math.PI * 2,
+      data: Array.from({length: 5 + Math.floor(Math.random() * 6)}, () => 0.15 + Math.random() * 0.85),
+      scatterPts: Array.from({length: 8 + Math.floor(Math.random() * 8)}, () => ({
+        x: Math.random(),
+        y: Math.random()
+      })),
+      pieSlices: (() => {
+        const slices = [];
+        let remaining = 1;
+        const count = 3 + Math.floor(Math.random() * 3);
+        for (let s = 0; s < count - 1; s++) {
+          const val = remaining * (0.2 + Math.random() * 0.5);
+          slices.push(val);
+          remaining -= val;
+        }
+        slices.push(remaining);
+        return slices;
+      })()
+    };
+  }
+  initFloatingViz();
+
+  // ---- NEBULA GLOW PATCHES (drawn on canvas) ----
+  const nebulaPatches = [];
+  const nebulaCount = 5;
+  for (let i = 0; i < nebulaCount; i++) {
+    nebulaPatches.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: 150 + Math.random() * 300,
+      vx: (Math.random() - 0.5) * 0.08,
+      vy: (Math.random() - 0.5) * 0.06,
+      hue: Math.random() > 0.6 ? 140 : (Math.random() > 0.5 ? 160 : 120), // greens and teals
+      alpha: 0.008 + Math.random() * 0.012,
+      pulseSpeed: 0.3 + Math.random() * 0.5,
+      pulsePhase: Math.random() * Math.PI * 2
+    });
+  }
+
   // Computes shape coordinate targets for each particle
   function assignShapeTargets(shapeName) {
     const cx = shapeCenters.centerX;
@@ -301,11 +395,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     nodes.forEach((node, idx) => {
       if (shapeName === 'bell') {
-        // Normal Distribution Bell Curve
-        // Distribute along X axis from 15% to 85% width
         const fraction = (idx / nodeCount);
         const xPos = width * 0.15 + fraction * (width * 0.7);
-        // Gaussian Formula: y = A * e^(-(x-x0)^2 / 2c^2)
         const diff = xPos - cx;
         const gaussian = Math.exp(-Math.pow(diff, 2) / (2 * Math.pow(shapeCenters.bellStdDev, 2)));
         const yPos = cy + height * 0.1 - (gaussian * shapeCenters.bellAmp);
@@ -313,7 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
         node.ty = yPos;
       } 
       else if (shapeName === 'scatter_plot') {
-        // Multi-cluster scatter plot (3 dense clusters)
         const cluster = idx % 3;
         let cCenterX = cx;
         let cCenterY = cy;
@@ -329,14 +419,12 @@ document.addEventListener('DOMContentLoaded', () => {
           cCenterY = cy + height * 0.15;
         }
         
-        // Random gaussian dispersion
         const angle = Math.random() * Math.PI * 2;
-        const radius = Math.pow(Math.random(), 1.5) * (width * 0.08); // denser center
+        const radius = Math.pow(Math.random(), 1.5) * (width * 0.08);
         node.tx = cCenterX + Math.cos(angle) * radius;
         node.ty = cCenterY + Math.sin(angle) * radius;
       } 
       else if (shapeName === 'kmeans') {
-        // Similar to scatter plot but closer to centroids
         const cluster = node.clusterIdx;
         const centroid = shapeCenters.kmeansCenters[cluster];
         const angle = Math.random() * Math.PI * 2;
@@ -345,7 +433,6 @@ document.addEventListener('DOMContentLoaded', () => {
         node.ty = centroid.y + Math.sin(angle) * radius;
       } 
       else if (shapeName === 'sine') {
-        // Sine wave
         const fraction = (idx / nodeCount);
         const xPos = width * 0.15 + fraction * (width * 0.7);
         const angle = (xPos - (width * 0.15)) * shapeCenters.sineFreq;
@@ -357,13 +444,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // State Controller for Morphing Constellations
-  // Scatter (10s) -> Morphing (2s) -> Constellation (3s) -> Dissolving (2s)
   function manageConstellationState() {
-    morphTimer += 16.67; // approx ms per frame
+    morphTimer += 16.67;
     
     if (currentShape === 'scatter') {
       if (morphTimer > 10000) {
-        // Move to morphing state
         targetShapeName = shapeNames[shapeIndex];
         assignShapeTargets(targetShapeName);
         currentShape = 'morphing';
@@ -386,24 +471,274 @@ document.addEventListener('DOMContentLoaded', () => {
       if (morphTimer > 2000) {
         currentShape = 'scatter';
         morphTimer = 0;
-        // Cycle shape
         shapeIndex = (shapeIndex + 1) % shapeNames.length;
       }
     }
   }
 
+  // ---- DRAW FLOATING MINI VISUALIZATIONS ----
+  function drawFloatingViz() {
+    floatingViz.forEach(viz => {
+      // Move
+      viz.x += viz.vx;
+      viz.y += viz.vy;
+      viz.phase += 0.008;
+      
+      // Bounce
+      if (viz.x < -20 || viz.x > width + 20) viz.vx *= -1;
+      if (viz.y < -20 || viz.y > height + 20) viz.vy *= -1;
+      
+      const pulseAlpha = viz.opacity + Math.sin(viz.phase) * 0.01;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, pulseAlpha);
+      ctx.translate(viz.x, viz.y);
+      
+      if (viz.type === 'barChart') {
+        // Mini bar chart
+        const barW = viz.w / (viz.data.length * 1.5);
+        viz.data.forEach((val, i) => {
+          const barH = val * viz.h;
+          const x = i * (barW * 1.5);
+          const animVal = val + Math.sin(animationTime * 2 + i) * 0.08;
+          const bh = Math.max(2, animVal * viz.h);
+          
+          ctx.fillStyle = `rgba(0, 255, 39, ${0.3 + val * 0.4})`;
+          ctx.fillRect(x, viz.h - bh, barW, bh);
+          
+          // Glow top edge
+          ctx.fillStyle = `rgba(0, 255, 39, ${0.6 + val * 0.3})`;
+          ctx.fillRect(x, viz.h - bh, barW, 1);
+        });
+        
+        // Axes
+        ctx.strokeStyle = 'rgba(0, 255, 39, 0.15)';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(0, viz.h);
+        ctx.lineTo(viz.w, viz.h);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, viz.h);
+        ctx.stroke();
+      }
+      else if (viz.type === 'scatterMini') {
+        // Mini scatter plot with axes
+        ctx.strokeStyle = 'rgba(0, 255, 39, 0.12)';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(0, viz.h);
+        ctx.lineTo(viz.w, viz.h);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, viz.h);
+        ctx.stroke();
+        
+        // Draw trend line
+        ctx.strokeStyle = 'rgba(0, 255, 39, 0.08)';
+        ctx.beginPath();
+        ctx.moveTo(0, viz.h * 0.8);
+        ctx.lineTo(viz.w, viz.h * 0.2);
+        ctx.stroke();
+        
+        viz.scatterPts.forEach(pt => {
+          const px = pt.x * viz.w;
+          const py = pt.y * viz.h;
+          ctx.fillStyle = 'rgba(0, 255, 39, 0.5)';
+          ctx.beginPath();
+          ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+      else if (viz.type === 'sineWave') {
+        // Animated sine wave
+        ctx.strokeStyle = 'rgba(0, 255, 39, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let px = 0; px < viz.w; px++) {
+          const t = (px / viz.w) * Math.PI * 3;
+          const sy = viz.h / 2 + Math.sin(t + animationTime * 3) * (viz.h * 0.35);
+          if (px === 0) ctx.moveTo(px, sy);
+          else ctx.lineTo(px, sy);
+        }
+        ctx.stroke();
+        
+        // Second wave (phase shifted)
+        ctx.strokeStyle = 'rgba(45, 186, 45, 0.15)';
+        ctx.beginPath();
+        for (let px = 0; px < viz.w; px++) {
+          const t = (px / viz.w) * Math.PI * 3;
+          const sy = viz.h / 2 + Math.cos(t + animationTime * 2.5) * (viz.h * 0.25);
+          if (px === 0) ctx.moveTo(px, sy);
+          else ctx.lineTo(px, sy);
+        }
+        ctx.stroke();
+      }
+      else if (viz.type === 'pieChart') {
+        // Mini pie/donut chart
+        const cx = viz.w / 2;
+        const cy = viz.h / 2;
+        const r = Math.min(viz.w, viz.h) * 0.4;
+        let startAngle = animationTime * 0.5;
+        
+        const pieColors = [
+          'rgba(0, 255, 39, 0.35)',
+          'rgba(45, 186, 45, 0.3)',
+          'rgba(118, 232, 118, 0.25)',
+          'rgba(0, 200, 50, 0.3)',
+          'rgba(0, 150, 40, 0.25)',
+          'rgba(0, 100, 60, 0.2)'
+        ];
+        
+        viz.pieSlices.forEach((slice, i) => {
+          const endAngle = startAngle + slice * Math.PI * 2;
+          ctx.fillStyle = pieColors[i % pieColors.length];
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, startAngle, endAngle);
+          ctx.closePath();
+          ctx.fill();
+          
+          // Slice border
+          ctx.strokeStyle = 'rgba(0, 255, 39, 0.15)';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+          
+          startAngle = endAngle;
+        });
+        
+        // Center hole for donut effect
+        ctx.fillStyle = 'rgba(2, 10, 15, 0.8)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      else if (viz.type === 'histogram') {
+        // Histogram with a bell curve overlay
+        const barW = viz.w / viz.data.length;
+        viz.data.forEach((val, i) => {
+          // Make a bell-ish distribution
+          const center = viz.data.length / 2;
+          const distFromCenter = Math.abs(i - center) / center;
+          const bellVal = Math.exp(-distFromCenter * distFromCenter * 3) * 0.9 + 0.1;
+          const bh = bellVal * viz.h * 0.85;
+          
+          ctx.fillStyle = `rgba(0, 255, 39, ${0.15 + bellVal * 0.2})`;
+          ctx.fillRect(i * barW + 1, viz.h - bh, barW - 2, bh);
+        });
+        
+        // Bell curve overlay
+        ctx.strokeStyle = 'rgba(118, 232, 118, 0.25)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let px = 0; px < viz.w; px++) {
+          const t = (px / viz.w - 0.5) * 4;
+          const bellY = Math.exp(-t * t * 0.5);
+          const sy = viz.h - bellY * viz.h * 0.85;
+          if (px === 0) ctx.moveTo(px, sy);
+          else ctx.lineTo(px, sy);
+        }
+        ctx.stroke();
+      }
+      
+      ctx.restore();
+    });
+  }
+
+  // ---- DRAW MATRIX RAIN ----
+  function drawMatrixRain() {
+    matrixColumns.forEach(col => {
+      col.y += col.speed;
+      col.charTimer++;
+      
+      // Randomize a character periodically
+      if (col.charTimer >= col.charInterval) {
+        col.charTimer = 0;
+        const idx = Math.floor(Math.random() * col.chars.length);
+        col.chars[idx] = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+      }
+      
+      // Reset when fully off screen
+      if (col.y > height + col.length * col.fontSize) {
+        col.y = -col.length * col.fontSize - Math.random() * height * 0.5;
+        col.x = Math.random() * width;
+      }
+      
+      ctx.font = `${col.fontSize}px 'Share Tech Mono', monospace`;
+      
+      col.chars.forEach((char, i) => {
+        const charY = col.y + i * col.fontSize;
+        if (charY < -col.fontSize || charY > height + col.fontSize) return;
+        
+        // Head char is brighter
+        const isHead = i === col.chars.length - 1;
+        const fadeRatio = i / col.chars.length;
+        
+        if (isHead) {
+          ctx.fillStyle = `rgba(180, 255, 180, 0.12)`;
+        } else {
+          const alpha = 0.02 + fadeRatio * 0.04;
+          ctx.fillStyle = `rgba(0, 255, 39, ${alpha})`;
+        }
+        
+        ctx.fillText(char, col.x, charY);
+      });
+    });
+  }
+
+  // ---- DRAW NEBULA PATCHES ----
+  function drawNebulaPatches() {
+    nebulaPatches.forEach(nb => {
+      nb.x += nb.vx;
+      nb.y += nb.vy;
+      
+      // Soft bounce
+      if (nb.x < -nb.radius || nb.x > width + nb.radius) nb.vx *= -1;
+      if (nb.y < -nb.radius || nb.y > height + nb.radius) nb.vy *= -1;
+      
+      const pulse = Math.sin(animationTime * nb.pulseSpeed + nb.pulsePhase) * 0.004;
+      const alpha = nb.alpha + pulse;
+      
+      const gradient = ctx.createRadialGradient(nb.x, nb.y, 0, nb.x, nb.y, nb.radius);
+      gradient.addColorStop(0, `hsla(${nb.hue}, 80%, 40%, ${alpha * 1.5})`);
+      gradient.addColorStop(0.4, `hsla(${nb.hue}, 70%, 30%, ${alpha})`);
+      gradient.addColorStop(1, `hsla(${nb.hue}, 60%, 20%, 0)`);
+      
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(nb.x, nb.y, nb.radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
   // Core background draw loop
   function drawBackground() {
     animationTime += 0.015;
-    ctx.fillStyle = '#000000';
+    
+    // ---- RICH GRADIENT BASE (not flat black) ----
+    ctx.clearRect(0, 0, width, height);
+    
+    // Deep base fill
+    const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+    bgGrad.addColorStop(0, 'rgba(2, 12, 18, 0.92)');
+    bgGrad.addColorStop(0.3, 'rgba(1, 10, 10, 0.92)');
+    bgGrad.addColorStop(0.6, 'rgba(2, 10, 15, 0.92)');
+    bgGrad.addColorStop(1, 'rgba(1, 14, 8, 0.92)');
+    ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
+    
+    // Subtle vignette
+    const vignette = ctx.createRadialGradient(width/2, height/2, height*0.2, width/2, height/2, Math.max(width, height) * 0.75);
+    vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    vignette.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, width, height);
+
+    // ---- NEBULA GLOW PATCHES ----
+    drawNebulaPatches();
 
     // A. Draw Drifting Data Science Symbols
     mathSymbols.forEach(symbol => {
       symbol.x += symbol.speedX;
       symbol.y += symbol.speedY;
       
-      // Wrap-around screen bounds
       if (symbol.y < -30) {
         symbol.y = height + 30;
         symbol.x = Math.random() * width;
@@ -417,6 +752,12 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.fillStyle = `rgba(0, 255, 39, ${symbol.opacity})`;
       ctx.fillText(symbol.text, symbol.x, symbol.y);
     });
+
+    // ---- MATRIX RAIN ----
+    drawMatrixRain();
+
+    // ---- FLOATING MINI VISUALIZATIONS ----
+    drawFloatingViz();
 
     // B. Spawn Spark Packets along connection lines
     if (Math.random() < 0.018 && sparks.length < 15) {
@@ -454,25 +795,37 @@ document.addEventListener('DOMContentLoaded', () => {
       const y = spark.startNode.y + (spark.endNode.y - spark.startNode.y) * spark.progress;
       
       ctx.shadowColor = '#00FF27';
-      ctx.shadowBlur = 6;
-      ctx.fillStyle = '#FFFFFF';
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = 'rgba(200, 255, 200, 0.9)';
       ctx.beginPath();
       ctx.arc(x, y, 2.5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.shadowBlur = 0; // reset
+      
+      // Spark trail
+      ctx.shadowBlur = 3;
+      ctx.fillStyle = 'rgba(0, 255, 39, 0.3)';
+      const trailX = spark.startNode.x + (spark.endNode.x - spark.startNode.x) * (spark.progress - 0.05);
+      const trailY = spark.startNode.y + (spark.endNode.y - spark.startNode.y) * (spark.progress - 0.05);
+      ctx.beginPath();
+      ctx.arc(trailX, trailY, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.shadowBlur = 0;
     });
 
     manageConstellationState();
 
-    // 1. Draw Grid Overlay with slow breathing breathing pulse
-    // Breathe amplitude: 0.12 to 0.22 opacity
-    const gridOpacity = 0.14 + Math.sin(animationTime * 0.8) * 0.05;
-    ctx.strokeStyle = `rgba(10, 92, 10, ${gridOpacity})`;
+    // 1. Draw Grid Overlay with breathing pulse
+    const gridOpacity = 0.08 + Math.sin(animationTime * 0.8) * 0.03;
     ctx.lineWidth = 0.5;
     
     const gridSize = 40;
     // Vertical grid lines
     for (let x = 0; x < width; x += gridSize) {
+      // Proximity-based brightness near center
+      const distFromCenter = Math.abs(x - width / 2) / (width / 2);
+      const lineAlpha = gridOpacity * (1 - distFromCenter * 0.5);
+      ctx.strokeStyle = `rgba(0, 180, 60, ${lineAlpha})`;
       ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, height);
@@ -480,6 +833,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Horizontal grid lines
     for (let y = 0; y < height; y += gridSize) {
+      const distFromCenter = Math.abs(y - height / 2) / (height / 2);
+      const lineAlpha = gridOpacity * (1 - distFromCenter * 0.5);
+      ctx.strokeStyle = `rgba(0, 180, 60, ${lineAlpha})`;
       ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);
@@ -497,7 +853,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2);
       ctx.stroke();
       
-      // Remove rings that expanded fully
       if (ring.r >= ring.maxR) {
         sonarRings.splice(idx, 1);
       }
@@ -512,10 +867,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.shadowColor = '#00FF27';
         ctx.shadowBlur = 10 * animFade;
         ctx.beginPath();
-        // Draw centroid as a glowing crosshair node
         ctx.arc(centroid.x, centroid.y, centroid.r * animFade, 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowBlur = 0; // reset
+        ctx.shadowBlur = 0;
         
         ctx.strokeStyle = 'rgba(0, 255, 39, ' + (0.3 * animFade) + ')';
         ctx.lineWidth = 1;
@@ -531,35 +885,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Update Node coordinates
     nodes.forEach(node => {
       if (currentShape === 'scatter') {
-        // Natural drift kinematics
         node.x += node.vx;
         node.y += node.vy;
         
-        // Bounce bounds
         if (node.x < 0 || node.x > width) node.vx *= -1;
         if (node.y < 0 || node.y > height) node.vy *= -1;
       } 
       else if (currentShape === 'morphing') {
-        // Smooth lerping with staggered organic delay
         const delayFactor = Math.max(0, (morphTimer / 2500) - node.lerpDelay);
         const progress = Math.min(1, delayFactor / (1 - node.lerpDelay));
-        
-        // Quad ease out formula
         const ease = 1 - Math.pow(1 - progress, 2);
-        
-        // Target lerp positions
         node.x = node.x + (node.tx - node.x) * ease * 0.15;
         node.y = node.y + (node.ty - node.y) * ease * 0.15;
       } 
       else if (currentShape === 'constellation') {
-        // Gently sway in morph target positions
         const driftX = Math.sin(animationTime + node.lerpDelay * 10) * 0.15;
         const driftY = Math.cos(animationTime + node.lerpDelay * 10) * 0.15;
         node.x = node.tx + driftX;
         node.y = node.ty + driftY;
       } 
       else if (currentShape === 'dissolving') {
-        // Drift outwards from constellation position back to scatter kinematics
         node.x += node.vx * 1.5;
         node.y += node.vy * 1.5;
         
@@ -568,8 +913,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // 5. Draw Network connections
-    // Node connects to neighbors with line opacity representing proximity
+    // 5. Draw Network connections with gradient coloring
     ctx.lineWidth = 0.5;
     for (let i = 0; i < nodeCount; i++) {
       for (let j = i + 1; j < nodeCount; j++) {
@@ -578,20 +922,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const dist = Math.sqrt(dx * dx + dy * dy);
         
         if (dist < maxConnectDist) {
-          // Opacity depends on proximity
-          let baseOpacity = (1 - dist / maxConnectDist) * 0.12;
+          let baseOpacity = (1 - dist / maxConnectDist) * 0.15;
           
-          // Boost lines drawing to k-means centroids
           if (targetShapeName === 'kmeans' && (currentShape === 'morphing' || currentShape === 'constellation')) {
-            const centroid1 = shapeCenters.kmeansCenters[nodes[i].clusterIdx];
-            const centroid2 = shapeCenters.kmeansCenters[nodes[j].clusterIdx];
-            // If they belong to same cluster, connect them slightly brighter
             if (nodes[i].clusterIdx === nodes[j].clusterIdx) {
               baseOpacity *= 1.8;
             }
           }
           
-          ctx.strokeStyle = `rgba(0, 255, 39, ${baseOpacity})`;
+          // Gradient line for richer look
+          const lineGrad = ctx.createLinearGradient(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
+          lineGrad.addColorStop(0, `rgba(0, 255, 39, ${baseOpacity})`);
+          lineGrad.addColorStop(0.5, `rgba(0, 200, 80, ${baseOpacity * 0.8})`);
+          lineGrad.addColorStop(1, `rgba(0, 255, 39, ${baseOpacity})`);
+          
+          ctx.strokeStyle = lineGrad;
           ctx.beginPath();
           ctx.moveTo(nodes[i].x, nodes[i].y);
           ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -600,17 +945,33 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 6. Draw Nodes
+    // 6. Draw Nodes with glow
     nodes.forEach(node => {
-      ctx.fillStyle = 'rgba(0, 255, 39, 0.5)';
+      // Outer glow
+      const glowGrad = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, node.size * 4);
+      glowGrad.addColorStop(0, 'rgba(0, 255, 39, 0.15)');
+      glowGrad.addColorStop(1, 'rgba(0, 255, 39, 0)');
+      ctx.fillStyle = glowGrad;
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.size * 4, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Core
+      ctx.fillStyle = 'rgba(0, 255, 39, 0.6)';
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Bright center
+      ctx.fillStyle = 'rgba(200, 255, 200, 0.4)';
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.size * 0.4, 0, Math.PI * 2);
       ctx.fill();
     });
 
     requestAnimationFrame(drawBackground);
   }
-  drawBackground();
+  drawBackground();drawBackground();
 
 
   // ==========================================
