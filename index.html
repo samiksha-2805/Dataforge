@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Forge — Data Science Club of SRMIST Trichy</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Official website of Data Forge, the Data Science Club of SRM Institute of Science & Technology, Tiruchirapalli. Join our community, explore the Foundry Series events, and master data analytics.">
+  <meta name="keywords" content="Data Forge, Data Science, SRMIST Trichy, Data Analytics, Machine Learning, SRM Trichy Club, Foundry Series, Python, Big Data">
+  <meta name="author" content="Data Forge Club">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Data Forge — Data Science Club of SRMIST Trichy">
+  <meta property="og:description" content="Futuristic terminal for the Data Science Club of SRMIST Trichy. Explore the Foundry Series of workshops and offline competitions.">
+  <meta property="og:image" content="https://chat.whatsapp.com/CGwok6lCSwt1DEIfCUHXso">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Inter:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Script -->
+  <script defer src="script.js"></script>
+</head>
+<body>
+
+  <!-- Background Animated Layer -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Custom Cursor Elements -->
+  <div id="custom-cursor">
+    <div class="reticle-tick top"></div>
+    <div class="reticle-tick right"></div>
+    <div class="reticle-tick bottom"></div>
+    <div class="reticle-tick left"></div>
+    <div class="reticle-dot"></div>
+  </div>
+  <div id="cursor-glow"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <!-- High-quality Custom SVG Logo -->
+        <svg class="df-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="logo-glow" x="-25%" y="-25%" width="150%" height="150%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feColorMatrix type="matrix" values="0 0 0 0 0   0 0 0 0 1   0 0 0 0 0.15  0 0 0 0.8 0" />
+              <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <polygon points="50,12 83,31 83,69 50,88 17,69 17,31" fill="none" stroke="rgba(0, 255, 39, 0.2)" stroke-width="1.5" />
+          <path d="M50,25 C36,25 28,36 28,50 C28,64 36,75 50,75 M50,25 H72 M50,48 H66" fill="none" stroke="#00FF27" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#logo-glow)"/>
+          <circle cx="50" cy="25" r="4" fill="#FFFFFF" stroke="#00FF27" stroke-width="1.5" />
+          <circle cx="50" cy="75" r="4" fill="#FFFFFF" stroke="#00FF27" stroke-width="1.5" />
+          <circle cx="28" cy="50" r="3.5" fill="#00FF27" />
+          <circle cx="72" cy="25" r="3.5" fill="#00FF27" />
+          <circle cx="66" cy="48" r="3.5" fill="#00FF27" />
+          <line x1="28" y1="50" x2="50" y2="48" stroke="#76E876" stroke-width="1" stroke-dasharray="2,2"/>
+          <line x1="50" y1="25" x2="66" y2="48" stroke="#76E876" stroke-width="0.8" />
+        </svg>
+        <span class="brand-text">DATA FORGE</span>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about" class="nav-link">ABOUT</a></li>
+        <li><a href="#events" class="nav-link">EVENTS</a></li>
+        <li><a href="#contact" class="nav-link">CONTACT</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero" class="hero-section">
+    <div class="hero-container">
+      <div class="hero-content">
+        <span class="hero-label">SRMIST TRICHY · DATA SCIENCE CLUB</span>
+        <h1 class="hero-title" id="hero-heading" data-text="DATA FORGE">DATA FORGE</h1>
+        <p class="hero-tagline" id="typewriter-tagline"></p>
+        
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num-wrapper">
+              <span class="stat-number" data-target="10">0</span><span class="stat-plus">+</span>
+            </div>
+            <span class="stat-label">CORE TEAM MEMBERS</span>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num-wrapper">
+              <span class="stat-number" data-target="4">0</span>
+            </div>
+            <span class="stat-label">FOUNDRY CHAPTERS THIS AUGUST</span>
+          </div>
+        </div>
+        
+        <button class="cta-button" id="hero-cta">
+          <span class="cta-scan"></span>
+          EXPLORE THE FOUNDRY →
+        </button>
+      </div>
+      
+      <!-- CSS/SVG Animated Hexagon network -->
+      <div class="hero-decoration">
+        <svg class="hex-network" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <g class="network-lines">
+            <line x1="50" y1="50" x2="100" y2="20" />
+            <line x1="100" y1="20" x2="150" y2="50" />
+            <line x1="150" y1="50" x2="150" y2="110" />
+            <line x1="150" y1="110" x2="100" y2="140" />
+            <line x1="100" y1="140" x2="50" y2="110" />
+            <line x1="50" y1="110" x2="50" y2="50" />
+            <line x1="50" y1="50" x2="100" y2="80" />
+            <line x1="100" y1="80" x2="100" y2="20" />
+            <line x1="100" y1="80" x2="150" y2="50" />
+            <line x1="100" y1="80" x2="150" y2="110" />
+            <line x1="100" y1="80" x2="100" y2="140" />
+            <line x1="100" y1="80" x2="50" y2="110" />
+          </g>
+          <g class="network-nodes">
+            <circle cx="50" cy="50" r="5" class="pulse-node node-1" />
+            <circle cx="100" cy="20" r="5" class="pulse-node node-2" />
+            <circle cx="150" cy="50" r="5" class="pulse-node node-3" />
+            <circle cx="150" cy="110" r="5" class="pulse-node node-4" />
+            <circle cx="100" cy="140" r="5" class="pulse-node node-5" />
+            <circle cx="50" cy="110" r="5" class="pulse-node node-6" />
+            <circle cx="100" cy="80" r="7" class="pulse-node node-center" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Foundry Series (Events) Section -->
+  <section id="events" class="events-section">
+    <div class="section-header scroll-fade">
+      <h2 class="section-title glitch-hover" id="events-title" data-text="THE FOUNDRY SERIES">THE FOUNDRY SERIES</h2>
+      <span class="section-subtitle">AUGUST 2025 · 4 CHAPTERS · 8 EVENTS</span>
+      <p class="section-desc">
+        The Foundry Series is Data Forge's flagship event arc — four progressive chapters running through August, each forging a different layer of data mastery. Every chapter contains one online workshop and one offline competition.
+      </p>
+    </div>
+
+    <!-- Chapter List -->
+    <div class="chapters-container">
+      
+      <!-- CHAPTER 01 -->
+      <div class="chapter-block scroll-fade" id="ch1">
+        <div class="chapter-info">
+          <div class="chapter-badge">CH.01</div>
+          <h3 class="chapter-title">CHAPTER 01 — IGNITION</h3>
+          <p class="chapter-desc font-inter">Lighting the spark. Building the foundation.</p>
+        </div>
+        <div class="event-cards">
+          <!-- Event 1 (Workshop) -->
+          <div class="event-card">
+            <div class="event-type badge-workshop">◉ ONLINE · WORKSHOP</div>
+            <h4 class="event-name">PYFORGE</h4>
+            <p class="event-desc font-inter">A hands-on introduction to Python for Data Science. Covers NumPy, Pandas, and Matplotlib — the core toolkit every data scientist relies on.</p>
+            <div class="card-arrow">→</div>
+            <div class="card-scanline"></div>
+          </div>
+          <!-- Event 2 (Competition) -->
+          <div class="event-card">
+            <div class="event-type badge-competition">◈ OFFLINE · COMPETITION</div>
+            <h4 class="event-name">RAW DATA RUMBLE</h4>
+            <p class="event-desc font-inter">You get a messy, unstructured dataset. You have 90 minutes. Clean it, analyse it, and tell a story with it. The best insight wins.</p>
+            <div class="card-arrow">→</div>
+            <div class="card-scanline"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAPTER 02 -->
+      <div class="chapter-block scroll-fade" id="ch2">
+        <div class="chapter-info">
+          <div class="chapter-badge">CH.02</div>
+          <h3 class="chapter-title">CHAPTER 02 — SYNTHESIS</h3>
+          <p class="chapter-desc font-inter">Turning numbers into narratives.</p>
+        </div>
+        <div class="event-cards">
+          <!-- Event 1 (Workshop) -->
+          <div class="event-card">
+            <div class="event-type badge-workshop">◉ ONLINE · WORKSHOP</div>
+            <h4 class="event-name">VISUALFORGE</h4>
+            <p class="event-desc font-inter">A deep-dive into data visualization using Power BI and Tableau. Learn how to build dashboards that don't just show data — they tell stories.</p>
+            <div class="card-arrow">→</div>
+            <div class="card-scanline"></div>
+          </div>
+          <!-- Event 2 (Competition) -->
+          <div class="event-card">
+            <div class="event-type badge-competition">◈ OFFLINE · COMPETITION</div>
+            <h4 class="event-name">DASHBOARD DUEL</h4>
+            <p class="event-desc font-inter">Teams are given a business dataset and tasked with building the most compelling, insightful dashboard in a timed session. Judged on clarity, design, and depth.</p>
+            <div class="card-arrow">→</div>
+            <div class="card-scanline"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAPTER 03 -->
+      <div class="chapter-block scroll-fade" id="ch3">
+        <div class="chapter-info">
+          <div class="chapter-badge">CH.03</div>
+          <h3 class="chapter-title">CHAPTER 03 — INTELLIGENCE</h3>
+          <p class="chapter-desc font-inter">Where data learns to think.</p>
+        </div>
+        <div class="event-cards">
+          <!-- Event 1 (Workshop) -->
+          <div class="event-card">
+            <div class="event-type badge-workshop">◉ ONLINE · WORKSHOP</div>
+            <h4 class="event-name">MLFORGE</h4>
+            <p class="event-desc font-inter">An intro to Machine Learning using Scikit-learn. From linear regression to decision trees — understand how models learn from data and how to build your first one.</p>
+            <div class="card-arrow">→</div>
+            <div class="card-scanline"></div>
+          </div>
+          <!-- Event 2 (Competition) -->
+          <div class="event-card">
+            <div class="event-type badge-competition">◈ OFFLINE · COMPETITION</div>
+            <h4 class="event-name">PREDICTIVE STRIKE</h4>
+            <p class="event-desc font-inter">A Kaggle-style offline challenge. Build the most accurate predictive model on a real dataset under competition conditions. Best model accuracy and methodology wins.</p>
+            <div class="card-arrow">→</div>
+            <div class="card-scanline"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAPTER 04 -->
+      <div class="chapter-block scroll-fade" id="ch4">
+        <div class="chapter-info">
+          <div class="chapter-badge">CH.04</div>
+          <h3 class="chapter-title">CHAPTER 04 — CONVERGENCE</h3>
+          <p class="chapter-desc font-inter">The forge completes. The data scientist emerges.</p>
+        </div>
+        <div class="event-cards">
+          <!-- Event 1 (Workshop) -->
+          <div class="event-card">
+            <div class="event-type badge-workshop">◉ ONLINE · WORKSHOP</div>
+            <h4 class="event-name">DATASTORM</h4>
+            <p class="event-desc font-inter">An introduction to Big Data — concepts, architecture, and tools including Apache Spark and Google BigQuery basics. Understand data at scale.</p>
+            <div class="card-arrow">→</div>
+            <div class="card-scanline"></div>
+          </div>
+          <!-- Event 2 (Competition) -->
+          <div class="event-card">
+            <div class="event-type badge-competition">◈ OFFLINE · COMPETITION</div>
+            <h4 class="event-name">DATATHON FINALE</h4>
+            <p class="event-desc font-inter">The series culminates in a full-day datathon. Open-ended problem statement, real-world dataset, multi-stage evaluation. The ultimate test of everything built across the four chapters.</p>
+            <div class="card-arrow">→</div>
+            <div class="card-scanline"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Timeline strip -->
+    <div class="timeline-strip scroll-fade">
+      <span class="timeline-label">YOUR JOURNEY THROUGH THE FOUNDRY</span>
+      <div class="timeline-track-container">
+        <div class="timeline-line"></div>
+        <div class="timeline-progress" id="timeline-progress-fill"></div>
+        <div class="timeline-nodes">
+          <div class="timeline-node" data-ch="CH.01">
+            <div class="node-glow-ring"></div>
+            <div class="node-dot"></div>
+            <span class="node-label">CH.01<br><span class="node-title">IGNITION</span></span>
+          </div>
+          <div class="timeline-node" data-ch="CH.02">
+            <div class="node-glow-ring"></div>
+            <div class="node-dot"></div>
+            <span class="node-label">CH.02<br><span class="node-title">SYNTHESIS</span></span>
+          </div>
+          <div class="timeline-node" data-ch="CH.03">
+            <div class="node-glow-ring"></div>
+            <div class="node-dot"></div>
+            <span class="node-label">CH.03<br><span class="node-title">INTELLIGENCE</span></span>
+          </div>
+          <div class="timeline-node" data-ch="CH.04">
+            <div class="node-glow-ring"></div>
+            <div class="node-dot"></div>
+            <span class="node-label">CH.04<br><span class="node-title">CONVERGENCE</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="section-header scroll-fade">
+      <h2 class="section-title glitch-hover" id="about-title" data-text="ABOUT DATA FORGE">ABOUT DATA FORGE</h2>
+    </div>
+
+    <div class="about-grid">
+      <!-- Left Column: Mission Block -->
+      <div class="mission-block scroll-fade">
+        <div class="mission-section">
+          <span class="block-subtitle">OUR VISION</span>
+          <p class="vision-text font-inter">
+            To foster a culture of data-driven thinking, analytical innovation, and industry-ready skills in Data Science, Data Analytics, Business Analytics, and Big Data — preparing students to thrive in a data-powered world.
+          </p>
+        </div>
+        <div class="mission-divider"></div>
+        <div class="mission-section">
+          <span class="block-subtitle">WHAT WE DO</span>
+          <ul class="objectives-list">
+            <li class="objective-item font-inter"><span class="bullet-arrow">▸</span> Teach core Data Science and Statistics fundamentals</li>
+            <li class="objective-item font-inter"><span class="bullet-arrow">▸</span> Develop hands-on skills in Data Analytics and visualization</li>
+            <li class="objective-item font-inter"><span class="bullet-arrow">▸</span> Conduct workshops, datathons, and case study competitions</li>
+            <li class="objective-item font-inter"><span class="bullet-arrow">▸</span> Build real-world data solutions for business and societal problems</li>
+            <li class="objective-item font-inter"><span class="bullet-arrow">▸</span> Collaborate with industry professionals and data-driven startups</li>
+            <li class="objective-item font-inter"><span class="bullet-arrow">▸</span> Encourage research publications in data-related fields</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Leadership Structure -->
+      <div class="leadership-block scroll-fade">
+        <span class="block-subtitle chart-title">LEADERSHIP STRUCTURE</span>
+        
+        <div class="org-chart-container">
+          <!-- SVG path connectors for org-chart on desktop -->
+          <svg class="org-connectors" id="org-connectors-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+          
+          <div class="org-tree" id="org-tree-root">
+            <!-- Row 1 -->
+            <div class="org-row">
+              <div class="org-node" data-role="President" data-desc="Overall leader driving club direction, activities, and strategic partnerships.">
+                <span class="node-role">PRESIDENT</span>
+              </div>
+            </div>
+            
+            <!-- Row 2 -->
+            <div class="org-row">
+              <div class="org-node" data-role="Vice President" data-desc="Supports the President, coordinates cross-team activities, and manages projects.">
+                <span class="node-role">VICE PRESIDENT</span>
+              </div>
+            </div>
+            
+            <!-- Row 3 -->
+            <div class="org-row">
+              <div class="org-node" data-role="Secretary" data-desc="Manages operations, schedules, documentation, and formal communications.">
+                <span class="node-role">SECRETARY</span>
+              </div>
+            </div>
+            
+            <!-- Row 4 (7 Branching Leads) -->
+            <div class="org-row row-branching">
+              <div class="org-node node-lead" data-role="Technical Lead" data-desc="Coordinates coding, software builds, and technical workshop syllabus.">
+                <span class="node-role">TECHNICAL LEAD</span>
+              </div>
+              <div class="org-node node-lead" data-role="R&D Lead" data-desc="Heads analytical research, project research, and model explorations.">
+                <span class="node-role">R&D LEAD</span>
+              </div>
+              <div class="org-node node-lead" data-role="Events Coordinator" data-desc="Manages scheduling, venue bookings, speaker relations, and logistics.">
+                <span class="node-role">EVENTS COORDINATOR</span>
+              </div>
+              <div class="org-node node-lead" data-role="PR & Industry Head" data-desc="Establishes industrial connections, corporate collaborations, and sponsorships.">
+                <span class="node-role">PR & INDUSTRY HEAD</span>
+              </div>
+              <div class="org-node node-lead" data-role="Social Media" data-desc="Builds and runs campaigns, announcements, and visual club branding.">
+                <span class="node-role">SOCIAL MEDIA</span>
+              </div>
+              <div class="org-node node-lead" data-role="Membership Chair" data-desc="Tracks student membership, rosters, attendance, and recruitment.">
+                <span class="node-role">MEMBERSHIP CHAIR</span>
+              </div>
+              <div class="org-node node-lead" data-role="Treasurer" data-desc="Controls budgets, expenditures, financial audits, and sponsorships.">
+                <span class="node-role">TREASURER</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Shared Tooltip element -->
+          <div class="org-tooltip" id="org-tooltip">Role details go here</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Who Can Join horizontal strip -->
+    <div class="join-strip scroll-fade">
+      <h3 class="join-strip-title">OPEN TO ALL B.TECH BRANCHES</h3>
+      <div class="join-strip-carousel" id="branch-carousel">
+        <span class="carousel-word active">Computer Science</span>
+        <span class="carousel-word">Electronics</span>
+        <span class="carousel-word">Mechanical</span>
+        <span class="carousel-word">Civil</span>
+        <span class="carousel-word">Biotechnology</span>
+        <span class="carousel-word">Finance</span>
+        <span class="carousel-word">Healthcare Technology</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Us Section -->
+  <section id="contact" class="contact-section">
+    <div class="section-header scroll-fade">
+      <h2 class="section-title glitch-hover" id="contact-title" data-text="JOIN THE FORGE">JOIN THE FORGE</h2>
+    </div>
+
+    <!-- WhatsApp Card -->
+    <div class="whatsapp-card scroll-fade">
+      <div class="wa-icon-wrapper">
+        <!-- Inline WhatsApp SVG Icon -->
+        <svg class="wa-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.982L2 22l5.233-1.371a9.994 9.994 0 0 0 4.779 1.218h.004c5.505 0 9.988-4.478 9.989-9.984 0-2.669-1.037-5.176-2.922-7.062A9.92 9.92 0 0 0 12.012 2zm5.835 14.165c-.32.902-1.854 1.63-2.58 1.739-.63.093-1.442.164-4.223-.988-3.56-1.473-5.839-5.09-6.018-5.328-.178-.238-1.448-1.927-1.448-3.678 0-1.75.91-2.612 1.233-2.97.323-.358.706-.447.94-.447h.67c.214 0 .487-.082.763.58.28.672.956 2.33 1.038 2.5.083.17.138.367.027.59-.11.22-.165.358-.33.55-.164.19-.345.426-.492.571-.162.158-.33.33-.142.653.188.324.836 1.379 1.79 2.228.1.089.197.172.29.25 1.137.96 2.03 1.286 2.457 1.46.32.13.513.11.706-.112.193-.223.836-.975 1.059-1.31.223-.335.447-.28.763-.162.317.118 2.008.987 2.35 1.157.343.17.571.253.654.394.082.141.082.818-.238 1.72z" />
+        </svg>
+      </div>
+      <h3 class="wa-card-heading">DATA FORGE COMMUNITY</h3>
+      <p class="wa-card-desc font-inter">
+        Join our WhatsApp community to stay updated on all Foundry Series events, workshops, resources, and announcements.
+      </p>
+      <a href="https://chat.whatsapp.com/CGwok6lCSwt1DEIfCUHXso" target="_blank" class="wa-btn" rel="noopener noreferrer">
+        JOIN NOW →
+      </a>
+      <div class="card-border-glow"></div>
+    </div>
+
+    <div class="contact-subnote">
+      SRMIST TRICHY · DATA SCIENCE CLUB · OPEN TO ALL BRANCHES
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <span class="footer-logo">DATA FORGE</span>
+      </div>
+      <div class="footer-center">
+        SRMIST TIRUCHIRAPALLI · DATA SCIENCE CLUB
+      </div>
+      <div class="footer-right">
+        &copy; 2025 DATA FORGE
+      </div>
+    </div>
+    
+    <!-- Scrolling binary strip -->
+    <div class="footer-binary-strip">
+      <div class="binary-marquee" id="binary-marquee">
+        <!-- Filled dynamically by JavaScript -->
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
