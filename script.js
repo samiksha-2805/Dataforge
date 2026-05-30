@@ -2,6 +2,61 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  // Text Scrambler Class for futuristic resolving text animations
+  class TextScrambler {
+    constructor(el) {
+      this.el = el;
+      this.chars = '!<>-_\\/[]{}—=+*^?#________010101';
+      this.update = this.update.bind(this);
+    }
+    setText(newText) {
+      const oldText = this.el.innerText || '';
+      const length = Math.max(oldText.length, newText.length);
+      const promise = new Promise((resolve) => this.resolve = resolve);
+      this.queue = [];
+      for (let i = 0; i < length; i++) {
+        const from = oldText[i] || '';
+        const to = newText[i] || '';
+        const start = Math.floor(Math.random() * 20);
+        const end = start + Math.floor(Math.random() * 20);
+        this.queue.push({ from, to, start, end });
+      }
+      cancelAnimationFrame(this.frameRequest);
+      this.frame = 0;
+      this.update();
+      return promise;
+    }
+    update() {
+      let output = '';
+      let complete = 0;
+      for (let i = 0, n = this.queue.length; i < n; i++) {
+        let { from, to, start, end, char } = this.queue[i];
+        if (this.frame >= end) {
+          complete++;
+          output += to;
+        } else if (this.frame >= start) {
+          if (!char || Math.random() < 0.28) {
+            char = this.randomChar();
+            this.queue[i].char = char;
+          }
+          output += `<span class="scramble-char">${char}</span>`;
+        } else {
+          output += from;
+        }
+      }
+      this.el.innerHTML = output;
+      if (complete === this.queue.length) {
+        this.resolve();
+      } else {
+        this.frameRequest = requestAnimationFrame(this.update);
+        this.frame++;
+      }
+    }
+    randomChar() {
+      return this.chars[Math.floor(Math.random() * this.chars.length)];
+    }
+  }
+
   // ==========================================
   // 1. CUSTOM CURSOR
   // ==========================================
@@ -202,6 +257,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Data Science Drifting Mathematical Symbols (drifts slowly upwards)
+  const symbolChars = ['Σ', 'μ', 'σ', 'f(x)', 'R²', 'β', 'λ', 'θ', 'P(A|B)', 'dy/dx', '√x', 'log(n)', 'matrix[N]', 'ŷ', 'H₀', 'x̄', 'χ²', 'z-score'];
+  const mathSymbols = [];
+  const symbolCount = 20;
+  
+  for (let i = 0; i < symbolCount; i++) {
+    mathSymbols.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      text: symbolChars[Math.floor(Math.random() * symbolChars.length)],
+      size: 11 + Math.random() * 14,
+      speedX: (Math.random() - 0.5) * 0.2,
+      speedY: -0.15 - Math.random() * 0.25,
+      opacity: 0.03 + Math.random() * 0.04
+    });
+  }
+
+  // Data spark packets running along connected nodes
+  const sparks = [];
+
   // Sonar Rings
   const sonarRings = [];
   function spawnSonar() {
@@ -322,6 +397,70 @@ document.addEventListener('DOMContentLoaded', () => {
     animationTime += 0.015;
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, width, height);
+
+    // A. Draw Drifting Data Science Symbols
+    mathSymbols.forEach(symbol => {
+      symbol.x += symbol.speedX;
+      symbol.y += symbol.speedY;
+      
+      // Wrap-around screen bounds
+      if (symbol.y < -30) {
+        symbol.y = height + 30;
+        symbol.x = Math.random() * width;
+      }
+      if (symbol.x < -30 || symbol.x > width + 30) {
+        symbol.x = Math.random() * width;
+        symbol.y = height + 30;
+      }
+      
+      ctx.font = `italic 500 ${symbol.size}px 'Share Tech Mono', monospace`;
+      ctx.fillStyle = `rgba(0, 255, 39, ${symbol.opacity})`;
+      ctx.fillText(symbol.text, symbol.x, symbol.y);
+    });
+
+    // B. Spawn Spark Packets along connection lines
+    if (Math.random() < 0.018 && sparks.length < 15) {
+      const i = Math.floor(Math.random() * nodeCount);
+      const neighbors = [];
+      for (let j = 0; j < nodeCount; j++) {
+        if (i === j) continue;
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < maxConnectDist) {
+          neighbors.push(j);
+        }
+      }
+      if (neighbors.length > 0) {
+        const targetIdx = neighbors[Math.floor(Math.random() * neighbors.length)];
+        sparks.push({
+          startNode: nodes[i],
+          endNode: nodes[targetIdx],
+          progress: 0,
+          speed: 0.012 + Math.random() * 0.02
+        });
+      }
+    }
+
+    // C. Draw and Update Spark Packets
+    sparks.forEach((spark, idx) => {
+      spark.progress += spark.speed;
+      if (spark.progress >= 1) {
+        sparks.splice(idx, 1);
+        return;
+      }
+      
+      const x = spark.startNode.x + (spark.endNode.x - spark.startNode.x) * spark.progress;
+      const y = spark.startNode.y + (spark.endNode.y - spark.startNode.y) * spark.progress;
+      
+      ctx.shadowColor = '#00FF27';
+      ctx.shadowBlur = 6;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0; // reset
+    });
 
     manageConstellationState();
 
@@ -503,8 +642,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Trigger typewriter 500ms after load
   setTimeout(startTypewriter, 500);
 
-  // Trigger glitch animation on heading
+  // Text scramble on hero heading on load and loop
+  const heroScrambler = new TextScrambler(heroHeading);
+  
   function triggerHeroGlitch() {
+    heroScrambler.setText('DATA FORGE');
     heroHeading.classList.add('glitch-active');
     setTimeout(() => {
       heroHeading.classList.remove('glitch-active');
@@ -512,7 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Run glitch on load and trigger every 10 seconds
-  setTimeout(triggerHeroGlitch, 100);
+  setTimeout(triggerHeroGlitch, 150);
   setInterval(triggerHeroGlitch, 10000);
 
 
@@ -601,6 +743,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Nav links text scramble animation on hover
+  navLinks.forEach(link => {
+    const originalText = link.innerText;
+    const linkScrambler = new TextScrambler(link);
+    link.addEventListener('mouseenter', () => {
+      linkScrambler.setText(originalText);
+    });
+  });
+
   // Explore button smooth scroll
   document.getElementById('hero-cta').addEventListener('click', () => {
     const eventsSection = document.getElementById('events');
@@ -665,9 +816,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
         
-        // If it's a section header, trigger glitch effect briefly
-        if (entry.target.querySelector('.glitch-hover')) {
-          const title = entry.target.querySelector('.glitch-hover');
+        // If it's a section header, trigger text scramble and glitch resolution
+        const title = entry.target.querySelector('.glitch-hover');
+        if (title) {
+          const originalText = title.getAttribute('data-text') || title.innerText;
+          const titleScrambler = new TextScrambler(title);
+          titleScrambler.setText(originalText);
+          
           title.classList.add('glitch-active');
           setTimeout(() => title.classList.remove('glitch-active'), 500);
         }

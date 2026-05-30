@@ -273,10 +273,42 @@ p {
   gap: 12px;
 }
 
-.df-logo {
+.df-logo-img {
   width: 38px;
   height: 38px;
-  filter: drop-shadow(0 0 3px rgba(0,255,39,0.3));
+  border-radius: 6px;
+  border: 1.5px solid rgba(0, 255, 39, 0.4);
+  box-shadow: 0 0 8px rgba(0, 255, 39, 0.25);
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.df-logo-img:hover {
+  transform: rotate(8deg) scale(1.15);
+  border-color: var(--accent-glow);
+  box-shadow: 0 0 15px rgba(0, 255, 39, 0.6);
+}
+
+.scramble-char {
+  color: var(--accent-glow);
+  text-shadow: 0 0 8px var(--accent-glow);
+  font-family: var(--font-mono);
+}
+
+/* Subtle CRT screen scanline overlay */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%);
+  z-index: 99999;
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.55;
 }
 
 .brand-text {
