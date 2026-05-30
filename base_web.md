@@ -53,9 +53,9 @@ Sonar Pulse Rings: Every 5–8 seconds, a faint circular ring originates from a 
 ## Section 6: Web structure
 The page has the following sections in order:
 
-Navigation Bar
-Hero section
-The Foundry Series (Events)
-About Data Forge
-Contact
-Footer
+1. Navigation Bar
+2. Hero section
+3. The Foundry Series (Events)
+4. About Data Forge
+5. Contact
+6. Footer
