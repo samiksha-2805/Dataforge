@@ -62,20 +62,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   const cursor = document.getElementById('custom-cursor');
   const glow = document.getElementById('cursor-glow');
-  
+
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
   let cursorX = mouseX;
   let cursorY = mouseY;
   let glowX = mouseX;
   let glowY = mouseY;
-  
+
   // Track mouse coordinates
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
   });
-  
+
   // Hide custom cursor on touch devices
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   if (isTouchDevice) {
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cursorY += (mouseY - cursorY) * 0.4;
       cursor.style.left = `${cursorX}px`;
       cursor.style.top = `${cursorY}px`;
-      
+
       // Shadow glow trails with lag
       glowX += (mouseX - glowX) * 0.12;
       glowY += (mouseY - glowY) * 0.12;
@@ -106,14 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Click Particle Burst Effect
   window.addEventListener('click', (e) => {
     if (isTouchDevice) return;
-    
+
     // Spawn ripple
     const ripple = document.createElement('div');
     ripple.className = 'cursor-ripple';
     ripple.style.left = `${e.clientX}px`;
     ripple.style.top = `${e.clientY}px`;
     document.body.appendChild(ripple);
-    
+
     setTimeout(() => {
       ripple.remove();
     }, 600);
@@ -132,42 +132,42 @@ document.addEventListener('DOMContentLoaded', () => {
       const speed = 2 + Math.random() * 4;
       const vx = Math.cos(angle) * speed;
       const vy = Math.sin(angle) * speed;
-      
+
       let px = e.clientX;
       let py = e.clientY;
       let opacity = 1;
       let scale = 1;
-      
+
       const particleAnim = () => {
         px += vx;
         py += vy;
         opacity -= 0.05;
         scale -= 0.03;
-        
+
         particle.style.transform = `translate(${px - e.clientX}px, ${py - e.clientY}px) scale(${Math.max(0, scale)})`;
         particle.style.opacity = opacity;
-        
+
         if (opacity > 0) {
           requestAnimationFrame(particleAnim);
         } else {
           particle.remove();
         }
       };
-      
+
       requestAnimationFrame(particleAnim);
     }
   });
 
   // Hover states logic for custom cursor
   const hoverSelectors = 'a, button, .event-card, .org-node, .cta-button, .nav-toggle, .wa-btn';
-  
+
   function bindCursorHovers() {
     if (isTouchDevice) return;
     document.querySelectorAll(hoverSelectors).forEach(elem => {
       // Avoid duplicate binding
       if (elem.dataset.cursorBound) return;
       elem.dataset.cursorBound = true;
-      
+
       elem.addEventListener('mouseenter', () => {
         glow.classList.add('cursor-hover');
       });
@@ -182,10 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
-  
+
   let width = canvas.width = window.innerWidth;
   let height = canvas.height = window.innerHeight;
-  
+
   window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const nodeCount = 90;
   const nodes = [];
   const maxConnectDist = 110;
-  
+
   // Animation state controls
   let animationTime = 0;
   let morphTimer = 0;
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let targetShapeName = 'scatter'; // 'bell', 'scatter_plot', 'kmeans', 'sine'
   const shapeNames = ['bell', 'scatter_plot', 'kmeans', 'sine'];
   let shapeIndex = 0;
-  
+
   // Shape coordinates anchors
   let shapeCenters = {
     centerX: width / 2,
@@ -245,12 +245,12 @@ document.addEventListener('DOMContentLoaded', () => {
       y: Math.random() * height,
       vx: (Math.random() - 0.5) * 0.6,
       vy: (Math.random() - 0.5) * 0.6,
-      
+
       // Interpolation target positions
       tx: 0,
       ty: 0,
       lerpDelay: Math.random() * 0.3, // organic assembly delay
-      
+
       // Unique particle signature
       size: 1 + Math.random() * 2,
       clusterIdx: i % 3 // Assigned cluster for k-means
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const symbolChars = ['Σ', 'μ', 'σ', 'f(x)', 'R²', 'β', 'λ', 'θ', 'P(A|B)', 'dy/dx', '√x', 'log(n)', 'matrix[N]', 'ŷ', 'H₀', 'x̄', 'χ²', 'z-score'];
   const mathSymbols = [];
   const symbolCount = 20;
-  
+
   for (let i = 0; i < symbolCount; i++) {
     mathSymbols.push({
       x: Math.random() * width,
@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---- MATRIX RAIN DATA COLUMNS ----
   const matrixColumns = [];
   const matrixChars = '0123456789ABCDEFΣμσβλθπΔ∂∫≈≠≤≥±∞'.split('');
-  
+
   function initMatrixColumns() {
     matrixColumns.length = 0;
     const colSpacing = 50;
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---- FLOATING MINI DATA VISUALIZATIONS ----
   const floatingViz = [];
   const vizTypes = ['barChart', 'scatterMini', 'sineWave', 'pieChart', 'histogram'];
-  
+
   function initFloatingViz() {
     floatingViz.length = 0;
     const vizCount = Math.max(4, Math.floor(width / 350));
@@ -350,8 +350,8 @@ document.addEventListener('DOMContentLoaded', () => {
       vy: (Math.random() - 0.5) * 0.12,
       opacity: 0.04 + Math.random() * 0.04,
       phase: Math.random() * Math.PI * 2,
-      data: Array.from({length: 5 + Math.floor(Math.random() * 6)}, () => 0.15 + Math.random() * 0.85),
-      scatterPts: Array.from({length: 8 + Math.floor(Math.random() * 8)}, () => ({
+      data: Array.from({ length: 5 + Math.floor(Math.random() * 6) }, () => 0.15 + Math.random() * 0.85),
+      scatterPts: Array.from({ length: 8 + Math.floor(Math.random() * 8) }, () => ({
         x: Math.random(),
         y: Math.random()
       })),
@@ -402,12 +402,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const yPos = cy + height * 0.1 - (gaussian * shapeCenters.bellAmp);
         node.tx = xPos;
         node.ty = yPos;
-      } 
+      }
       else if (shapeName === 'scatter_plot') {
         const cluster = idx % 3;
         let cCenterX = cx;
         let cCenterY = cy;
-        
+
         if (cluster === 0) {
           cCenterX = cx - width * 0.2;
           cCenterY = cy - height * 0.1;
@@ -418,20 +418,20 @@ document.addEventListener('DOMContentLoaded', () => {
           cCenterX = cx;
           cCenterY = cy + height * 0.15;
         }
-        
+
         const angle = Math.random() * Math.PI * 2;
         const radius = Math.pow(Math.random(), 1.5) * (width * 0.08);
         node.tx = cCenterX + Math.cos(angle) * radius;
         node.ty = cCenterY + Math.sin(angle) * radius;
-      } 
+      }
       else if (shapeName === 'kmeans') {
         const cluster = node.clusterIdx;
         const centroid = shapeCenters.kmeansCenters[cluster];
         const angle = Math.random() * Math.PI * 2;
-        const radius = Math.pow(Math.random(), 2) * (width * 0.06); 
+        const radius = Math.pow(Math.random(), 2) * (width * 0.06);
         node.tx = centroid.x + Math.cos(angle) * radius;
         node.ty = centroid.y + Math.sin(angle) * radius;
-      } 
+      }
       else if (shapeName === 'sine') {
         const fraction = (idx / nodeCount);
         const xPos = width * 0.15 + fraction * (width * 0.7);
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // State Controller for Morphing Constellations
   function manageConstellationState() {
     morphTimer += 16.67;
-    
+
     if (currentShape === 'scatter') {
       if (morphTimer > 10000) {
         targetShapeName = shapeNames[shapeIndex];
@@ -454,19 +454,19 @@ document.addEventListener('DOMContentLoaded', () => {
         currentShape = 'morphing';
         morphTimer = 0;
       }
-    } 
+    }
     else if (currentShape === 'morphing') {
       if (morphTimer > 2500) {
         currentShape = 'constellation';
         morphTimer = 0;
       }
-    } 
+    }
     else if (currentShape === 'constellation') {
       if (morphTimer > 3500) {
         currentShape = 'dissolving';
         morphTimer = 0;
       }
-    } 
+    }
     else if (currentShape === 'dissolving') {
       if (morphTimer > 2000) {
         currentShape = 'scatter';
@@ -483,16 +483,16 @@ document.addEventListener('DOMContentLoaded', () => {
       viz.x += viz.vx;
       viz.y += viz.vy;
       viz.phase += 0.008;
-      
+
       // Bounce
       if (viz.x < -20 || viz.x > width + 20) viz.vx *= -1;
       if (viz.y < -20 || viz.y > height + 20) viz.vy *= -1;
-      
+
       const pulseAlpha = viz.opacity + Math.sin(viz.phase) * 0.01;
       ctx.save();
       ctx.globalAlpha = Math.max(0, pulseAlpha);
       ctx.translate(viz.x, viz.y);
-      
+
       if (viz.type === 'barChart') {
         // Mini bar chart
         const barW = viz.w / (viz.data.length * 1.5);
@@ -501,15 +501,15 @@ document.addEventListener('DOMContentLoaded', () => {
           const x = i * (barW * 1.5);
           const animVal = val + Math.sin(animationTime * 2 + i) * 0.08;
           const bh = Math.max(2, animVal * viz.h);
-          
+
           ctx.fillStyle = `rgba(0, 255, 39, ${0.3 + val * 0.4})`;
           ctx.fillRect(x, viz.h - bh, barW, bh);
-          
+
           // Glow top edge
           ctx.fillStyle = `rgba(0, 255, 39, ${0.6 + val * 0.3})`;
           ctx.fillRect(x, viz.h - bh, barW, 1);
         });
-        
+
         // Axes
         ctx.strokeStyle = 'rgba(0, 255, 39, 0.15)';
         ctx.lineWidth = 0.5;
@@ -530,14 +530,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.moveTo(0, 0);
         ctx.lineTo(0, viz.h);
         ctx.stroke();
-        
+
         // Draw trend line
         ctx.strokeStyle = 'rgba(0, 255, 39, 0.08)';
         ctx.beginPath();
         ctx.moveTo(0, viz.h * 0.8);
         ctx.lineTo(viz.w, viz.h * 0.2);
         ctx.stroke();
-        
+
         viz.scatterPts.forEach(pt => {
           const px = pt.x * viz.w;
           const py = pt.y * viz.h;
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
           else ctx.lineTo(px, sy);
         }
         ctx.stroke();
-        
+
         // Second wave (phase shifted)
         ctx.strokeStyle = 'rgba(45, 186, 45, 0.15)';
         ctx.beginPath();
@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cy = viz.h / 2;
         const r = Math.min(viz.w, viz.h) * 0.4;
         let startAngle = animationTime * 0.5;
-        
+
         const pieColors = [
           'rgba(0, 255, 39, 0.35)',
           'rgba(45, 186, 45, 0.3)',
@@ -586,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'rgba(0, 150, 40, 0.25)',
           'rgba(0, 100, 60, 0.2)'
         ];
-        
+
         viz.pieSlices.forEach((slice, i) => {
           const endAngle = startAngle + slice * Math.PI * 2;
           ctx.fillStyle = pieColors[i % pieColors.length];
@@ -595,15 +595,15 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.arc(cx, cy, r, startAngle, endAngle);
           ctx.closePath();
           ctx.fill();
-          
+
           // Slice border
           ctx.strokeStyle = 'rgba(0, 255, 39, 0.15)';
           ctx.lineWidth = 0.5;
           ctx.stroke();
-          
+
           startAngle = endAngle;
         });
-        
+
         // Center hole for donut effect
         ctx.fillStyle = 'rgba(2, 10, 15, 0.8)';
         ctx.beginPath();
@@ -619,11 +619,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const distFromCenter = Math.abs(i - center) / center;
           const bellVal = Math.exp(-distFromCenter * distFromCenter * 3) * 0.9 + 0.1;
           const bh = bellVal * viz.h * 0.85;
-          
+
           ctx.fillStyle = `rgba(0, 255, 39, ${0.15 + bellVal * 0.2})`;
           ctx.fillRect(i * barW + 1, viz.h - bh, barW - 2, bh);
         });
-        
+
         // Bell curve overlay
         ctx.strokeStyle = 'rgba(118, 232, 118, 0.25)';
         ctx.lineWidth = 1;
@@ -637,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ctx.stroke();
       }
-      
+
       ctx.restore();
     });
   }
@@ -647,37 +647,37 @@ document.addEventListener('DOMContentLoaded', () => {
     matrixColumns.forEach(col => {
       col.y += col.speed;
       col.charTimer++;
-      
+
       // Randomize a character periodically
       if (col.charTimer >= col.charInterval) {
         col.charTimer = 0;
         const idx = Math.floor(Math.random() * col.chars.length);
         col.chars[idx] = matrixChars[Math.floor(Math.random() * matrixChars.length)];
       }
-      
+
       // Reset when fully off screen
       if (col.y > height + col.length * col.fontSize) {
         col.y = -col.length * col.fontSize - Math.random() * height * 0.5;
         col.x = Math.random() * width;
       }
-      
+
       ctx.font = `${col.fontSize}px 'Share Tech Mono', monospace`;
-      
+
       col.chars.forEach((char, i) => {
         const charY = col.y + i * col.fontSize;
         if (charY < -col.fontSize || charY > height + col.fontSize) return;
-        
+
         // Head char is brighter
         const isHead = i === col.chars.length - 1;
         const fadeRatio = i / col.chars.length;
-        
+
         if (isHead) {
           ctx.fillStyle = `rgba(180, 255, 180, 0.12)`;
         } else {
           const alpha = 0.02 + fadeRatio * 0.04;
           ctx.fillStyle = `rgba(0, 255, 39, ${alpha})`;
         }
-        
+
         ctx.fillText(char, col.x, charY);
       });
     });
@@ -688,19 +688,19 @@ document.addEventListener('DOMContentLoaded', () => {
     nebulaPatches.forEach(nb => {
       nb.x += nb.vx;
       nb.y += nb.vy;
-      
+
       // Soft bounce
       if (nb.x < -nb.radius || nb.x > width + nb.radius) nb.vx *= -1;
       if (nb.y < -nb.radius || nb.y > height + nb.radius) nb.vy *= -1;
-      
+
       const pulse = Math.sin(animationTime * nb.pulseSpeed + nb.pulsePhase) * 0.004;
       const alpha = nb.alpha + pulse;
-      
+
       const gradient = ctx.createRadialGradient(nb.x, nb.y, 0, nb.x, nb.y, nb.radius);
       gradient.addColorStop(0, `hsla(${nb.hue}, 80%, 40%, ${alpha * 1.5})`);
       gradient.addColorStop(0.4, `hsla(${nb.hue}, 70%, 30%, ${alpha})`);
       gradient.addColorStop(1, `hsla(${nb.hue}, 60%, 20%, 0)`);
-      
+
       ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.arc(nb.x, nb.y, nb.radius, 0, Math.PI * 2);
@@ -711,10 +711,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Core background draw loop
   function drawBackground() {
     animationTime += 0.015;
-    
+
     // ---- RICH GRADIENT BASE (not flat black) ----
     ctx.clearRect(0, 0, width, height);
-    
+
     // Deep base fill
     const bgGrad = ctx.createLinearGradient(0, 0, width, height);
     bgGrad.addColorStop(0, 'rgba(2, 12, 18, 0.92)');
@@ -723,9 +723,9 @@ document.addEventListener('DOMContentLoaded', () => {
     bgGrad.addColorStop(1, 'rgba(1, 14, 8, 0.92)');
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
-    
+
     // Subtle vignette
-    const vignette = ctx.createRadialGradient(width/2, height/2, height*0.2, width/2, height/2, Math.max(width, height) * 0.75);
+    const vignette = ctx.createRadialGradient(width / 2, height / 2, height * 0.2, width / 2, height / 2, Math.max(width, height) * 0.75);
     vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
     vignette.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
     ctx.fillStyle = vignette;
@@ -738,7 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mathSymbols.forEach(symbol => {
       symbol.x += symbol.speedX;
       symbol.y += symbol.speedY;
-      
+
       if (symbol.y < -30) {
         symbol.y = height + 30;
         symbol.x = Math.random() * width;
@@ -747,7 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
         symbol.x = Math.random() * width;
         symbol.y = height + 30;
       }
-      
+
       ctx.font = `italic 500 ${symbol.size}px 'Share Tech Mono', monospace`;
       ctx.fillStyle = `rgba(0, 255, 39, ${symbol.opacity})`;
       ctx.fillText(symbol.text, symbol.x, symbol.y);
@@ -790,17 +790,17 @@ document.addEventListener('DOMContentLoaded', () => {
         sparks.splice(idx, 1);
         return;
       }
-      
+
       const x = spark.startNode.x + (spark.endNode.x - spark.startNode.x) * spark.progress;
       const y = spark.startNode.y + (spark.endNode.y - spark.startNode.y) * spark.progress;
-      
+
       ctx.shadowColor = '#00FF27';
       ctx.shadowBlur = 8;
       ctx.fillStyle = 'rgba(200, 255, 200, 0.9)';
       ctx.beginPath();
       ctx.arc(x, y, 2.5, 0, Math.PI * 2);
       ctx.fill();
-      
+
       // Spark trail
       ctx.shadowBlur = 3;
       ctx.fillStyle = 'rgba(0, 255, 39, 0.3)';
@@ -809,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.beginPath();
       ctx.arc(trailX, trailY, 1.5, 0, Math.PI * 2);
       ctx.fill();
-      
+
       ctx.shadowBlur = 0;
     });
 
@@ -818,7 +818,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Draw Grid Overlay with breathing pulse
     const gridOpacity = 0.08 + Math.sin(animationTime * 0.8) * 0.03;
     ctx.lineWidth = 0.5;
-    
+
     const gridSize = 40;
     // Vertical grid lines
     for (let x = 0; x < width; x += gridSize) {
@@ -846,13 +846,13 @@ document.addEventListener('DOMContentLoaded', () => {
     sonarRings.forEach((ring, idx) => {
       ring.r += ring.speed;
       ring.opacity = 0.12 * (1 - ring.r / ring.maxR);
-      
+
       ctx.strokeStyle = `rgba(45, 186, 45, ${Math.max(0, ring.opacity)})`;
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2);
       ctx.stroke();
-      
+
       if (ring.r >= ring.maxR) {
         sonarRings.splice(idx, 1);
       }
@@ -861,7 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Draw K-Means Centroids if in K-Means constellation
     if (targetShapeName === 'kmeans' && (currentShape === 'morphing' || currentShape === 'constellation')) {
       const animFade = currentShape === 'morphing' ? (morphTimer / 2500) : (currentShape === 'constellation' ? 1 : 0);
-      
+
       shapeCenters.kmeansCenters.forEach(centroid => {
         ctx.fillStyle = centroid.color;
         ctx.shadowColor = '#00FF27';
@@ -870,7 +870,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.arc(centroid.x, centroid.y, centroid.r * animFade, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
-        
+
         ctx.strokeStyle = 'rgba(0, 255, 39, ' + (0.3 * animFade) + ')';
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -887,27 +887,27 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentShape === 'scatter') {
         node.x += node.vx;
         node.y += node.vy;
-        
+
         if (node.x < 0 || node.x > width) node.vx *= -1;
         if (node.y < 0 || node.y > height) node.vy *= -1;
-      } 
+      }
       else if (currentShape === 'morphing') {
         const delayFactor = Math.max(0, (morphTimer / 2500) - node.lerpDelay);
         const progress = Math.min(1, delayFactor / (1 - node.lerpDelay));
         const ease = 1 - Math.pow(1 - progress, 2);
         node.x = node.x + (node.tx - node.x) * ease * 0.15;
         node.y = node.y + (node.ty - node.y) * ease * 0.15;
-      } 
+      }
       else if (currentShape === 'constellation') {
         const driftX = Math.sin(animationTime + node.lerpDelay * 10) * 0.15;
         const driftY = Math.cos(animationTime + node.lerpDelay * 10) * 0.15;
         node.x = node.tx + driftX;
         node.y = node.ty + driftY;
-      } 
+      }
       else if (currentShape === 'dissolving') {
         node.x += node.vx * 1.5;
         node.y += node.vy * 1.5;
-        
+
         if (node.x < 0 || node.x > width) node.vx *= -1;
         if (node.y < 0 || node.y > height) node.vy *= -1;
       }
@@ -920,22 +920,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const dx = nodes[i].x - nodes[j].x;
         const dy = nodes[i].y - nodes[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        
+
         if (dist < maxConnectDist) {
           let baseOpacity = (1 - dist / maxConnectDist) * 0.15;
-          
+
           if (targetShapeName === 'kmeans' && (currentShape === 'morphing' || currentShape === 'constellation')) {
             if (nodes[i].clusterIdx === nodes[j].clusterIdx) {
               baseOpacity *= 1.8;
             }
           }
-          
+
           // Gradient line for richer look
           const lineGrad = ctx.createLinearGradient(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
           lineGrad.addColorStop(0, `rgba(0, 255, 39, ${baseOpacity})`);
           lineGrad.addColorStop(0.5, `rgba(0, 200, 80, ${baseOpacity * 0.8})`);
           lineGrad.addColorStop(1, `rgba(0, 255, 39, ${baseOpacity})`);
-          
+
           ctx.strokeStyle = lineGrad;
           ctx.beginPath();
           ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -955,13 +955,13 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.size * 4, 0, Math.PI * 2);
       ctx.fill();
-      
+
       // Core
       ctx.fillStyle = 'rgba(0, 255, 39, 0.6)';
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
       ctx.fill();
-      
+
       // Bright center
       ctx.fillStyle = 'rgba(200, 255, 200, 0.4)';
       ctx.beginPath();
@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     requestAnimationFrame(drawBackground);
   }
-  drawBackground();drawBackground();
+  drawBackground(); drawBackground();
 
 
   // ==========================================
@@ -979,15 +979,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   const heroHeading = document.getElementById('hero-heading');
   const taglineElem = document.getElementById('typewriter-tagline');
-  
+
   // Tagline Typing Setup
   const taglineText = "Forging Data Scientists. One Dataset at a Time.";
   let taglineIdx = 0;
-  
+
   function startTypewriter() {
     taglineElem.innerHTML = '';
     taglineElem.classList.add('typewriter-cursor');
-    
+
     function typeChar() {
       if (taglineIdx < taglineText.length) {
         taglineElem.innerHTML += taglineText.charAt(taglineIdx);
@@ -1005,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Text scramble on hero heading on load and loop
   const heroScrambler = new TextScrambler(heroHeading);
-  
+
   function triggerHeroGlitch() {
     heroScrambler.setText('DATA FORGE');
     heroHeading.classList.add('glitch-active');
@@ -1031,7 +1031,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let count = 0;
       const duration = 1200; // ms
       const stepTime = Math.max(10, Math.floor(duration / target));
-      
+
       const timer = setInterval(() => {
         count++;
         stat.textContent = count;
@@ -1076,7 +1076,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.classList.add('active');
       }
     });
-    
+
     // 3. Counter trigger check (Hero section is always in viewport first, run if within scroll bounds)
     if (!statsTriggered && window.scrollY < 200) {
       statsTriggered = true;
@@ -1132,25 +1132,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function drawTimelineProgress() {
     if (!eventsSection) return;
-    
+
     const secTop = eventsSection.offsetTop;
     const secHeight = eventsSection.offsetHeight;
     const scrollY = window.scrollY;
     const viewHeight = window.innerHeight;
-    
+
     // Calculate progress as scroll moves through events section
     // Start progress when top of events section enters viewport
     // End progress when bottom of events section leaves viewport
     const startPoint = secTop - viewHeight / 2;
     const endPoint = secTop + secHeight - viewHeight / 2;
-    
+
     let progress = (scrollY - startPoint) / (endPoint - startPoint);
     progress = Math.max(0, Math.min(1, progress));
-    
+
     // Convert to percentage
     const fillPercent = progress * 100;
     timelineProgressFill.style.width = `${fillPercent}%`;
-    
+
     // Check nodes reached (CH.01 = 0% progress, CH.02 = ~33%, CH.03 = ~66%, CH.04 = 100%)
     const thresholds = [0, 0.28, 0.62, 0.95];
     timelineNodes.forEach((node, index) => {
@@ -1176,14 +1176,14 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-        
+
         // If it's a section header, trigger text scramble and glitch resolution
         const title = entry.target.querySelector('.glitch-hover');
         if (title) {
           const originalText = title.getAttribute('data-text') || title.innerText;
           const titleScrambler = new TextScrambler(title);
           titleScrambler.setText(originalText);
-          
+
           title.classList.add('glitch-active');
           setTimeout(() => title.classList.remove('glitch-active'), 500);
         }
@@ -1197,7 +1197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (entry.target.classList.contains('leadership-block')) {
           animateLeadershipNodes();
         }
-        
+
         // Stop observing once visible
         obs.unobserve(entry.target);
       }
@@ -1208,7 +1208,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.scroll-fade').forEach(item => {
     observer.observe(item);
   });
-  
+
   // Stagger animate chapters in events list
   const chapterBlocks = document.querySelectorAll('.chapter-block');
   const chapterObserver = new IntersectionObserver((entries, obs) => {
@@ -1223,7 +1223,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }, observerOptions);
-  
+
   if (chapterBlocks.length > 0) {
     chapterObserver.observe(document.querySelector('.chapters-container'));
   }
@@ -1244,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nodes.forEach((node, idx) => {
       setTimeout(() => {
         node.classList.add('visible');
-        
+
         // If last batch loaded, draw paths
         if (idx === nodes.length - 1) {
           setTimeout(drawOrgConnectors, 250);
@@ -1267,21 +1267,21 @@ document.addEventListener('DOMContentLoaded', () => {
     node.addEventListener('mouseenter', (e) => {
       const roleName = node.getAttribute('data-role');
       const roleDesc = node.getAttribute('data-desc');
-      
+
       tooltip.innerHTML = `<strong>${roleName}</strong><br>${roleDesc}`;
       tooltip.style.opacity = 1;
-      
+
       // Compute tooltip coordinates
       const containerRect = orgContainer.getBoundingClientRect();
       const nodeRect = node.getBoundingClientRect();
-      
+
       const x = (nodeRect.left - containerRect.left) + nodeRect.width / 2;
       const y = (nodeRect.top - containerRect.top) - 10;
-      
+
       tooltip.style.left = `${x}px`;
       tooltip.style.top = `${y}px`;
       tooltip.style.transform = `scale(1) translate(-50%, -100%)`;
-      
+
       // Node glow effect expansion
       node.style.borderColor = 'var(--accent-glow)';
     });
@@ -1297,20 +1297,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawOrgConnectors() {
     // Empty connectors SVG first
     connectorsSvg.innerHTML = '';
-    
+
     // Skip SVG rendering on mobile viewports
     if (window.innerWidth <= 768) return;
-    
+
     const containerRect = orgContainer.getBoundingClientRect();
     const rows = document.querySelectorAll('.org-row');
     if (rows.length < 4) return;
-    
+
     // Nodes references
     const presNode = rows[0].querySelector('.org-node');
     const vpNode = rows[1].querySelector('.org-node');
     const secNode = rows[2].querySelector('.org-node');
     const leadNodes = rows[3].querySelectorAll('.org-node');
-    
+
     if (!presNode || !vpNode || !secNode || leadNodes.length === 0) return;
 
     // Helper to get relative coordinates
@@ -1333,7 +1333,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Line: President Bottom -> VP Top
     createPath(pres.cx, pres.top + pres.height, vp.cx, vp.top);
-    
+
     // 2. Line: VP Bottom -> Secretary Top
     createPath(vp.cx, vp.top + vp.height, secCoords.cx, secCoords.top);
 
@@ -1341,7 +1341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Draw a single main horizontal stem and vertical drop branches to each lead
     const secBottomX = secCoords.cx;
     const secBottomY = secCoords.top + secCoords.height;
-    
+
     // Determine bounds for horizontal stem line
     let minX = Infinity;
     let maxX = -Infinity;
@@ -1358,12 +1358,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Line from Secretary down to horizontal stem
     createPath(secBottomX, secBottomY, secBottomX, stemY);
-    
+
     // Horizontal stem line connecting extremes
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', `M ${minX} ${stemY} L ${maxX} ${stemY}`);
     connectorsSvg.appendChild(path);
-    
+
     // Vertical branches down to each lead top
     leadCoords.forEach(lead => {
       createPath(lead.cx, stemY, lead.cx, lead.top);
@@ -1390,7 +1390,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentWord = words[currentWordIdx];
     currentWord.classList.remove('active');
     currentWord.classList.add('exit');
-    
+
     // Delay to let exit transition finish
     setTimeout(() => {
       currentWord.classList.remove('exit');
@@ -1410,7 +1410,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 10. INFINITE SCROLLING BINARY FOOTER STRIP
   // ==========================================
   const marquee = document.getElementById('binary-marquee');
-  
+
   function generateBinaryString() {
     let binary = '';
     // Generate a long binary string to fill multiple screen widths
@@ -1421,7 +1421,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Repeat it twice to allow seamless loop scrolling
     marquee.textContent = `${binary}  ${binary}`;
   }
-  
+
   if (marquee) {
     generateBinaryString();
   }
