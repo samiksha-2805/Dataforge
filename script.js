@@ -717,10 +717,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Deep base fill
     const bgGrad = ctx.createLinearGradient(0, 0, width, height);
-    bgGrad.addColorStop(0, 'rgba(2, 12, 18, 0.92)');
-    bgGrad.addColorStop(0.3, 'rgba(1, 10, 10, 0.92)');
-    bgGrad.addColorStop(0.6, 'rgba(2, 10, 15, 0.92)');
-    bgGrad.addColorStop(1, 'rgba(1, 14, 8, 0.92)');
+    bgGrad.addColorStop(0, 'rgba(2, 12, 18, 0.5)');
+    bgGrad.addColorStop(0.3, 'rgba(1, 10, 10, 0.5)');
+    bgGrad.addColorStop(0.6, 'rgba(2, 10, 15, 0.5)');
+    bgGrad.addColorStop(1, 'rgba(1, 14, 8, 0.5)');
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
