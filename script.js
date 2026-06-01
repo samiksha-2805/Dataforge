@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chars: [],
         charTimer: 0,
         charInterval: 3 + Math.floor(Math.random() * 5),
-        fontSize: 10 + Math.floor(Math.random() * 4)
+        fontSize: 7 + Math.floor(Math.random() * 2)
       });
       // Pre-fill chars
       const col = matrixColumns[matrixColumns.length - 1];
@@ -672,10 +672,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const fadeRatio = i / col.chars.length;
 
         if (isHead) {
-          ctx.fillStyle = `rgba(180, 255, 180, 0.12)`;
+          ctx.fillStyle = `rgba(0, 150, 25, 0.4)`;
         } else {
           const alpha = 0.02 + fadeRatio * 0.04;
-          ctx.fillStyle = `rgba(0, 255, 39, ${alpha})`;
+          ctx.fillStyle = `rgba(0, 150, 25, ${alpha})`;
         }
 
         ctx.fillText(char, col.x, charY);
@@ -757,7 +757,7 @@ document.addEventListener('DOMContentLoaded', () => {
     drawMatrixRain();
 
     // ---- FLOATING MINI VISUALIZATIONS ----
-    drawFloatingViz();
+    // drawFloatingViz();
 
     // B. Spawn Spark Packets along connection lines
     if (Math.random() < 0.018 && sparks.length < 15) {
